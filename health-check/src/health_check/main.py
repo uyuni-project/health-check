@@ -13,7 +13,8 @@ from health_check.loki.loki_manager import run_loki
 from health_check.exporters import exporter
 from health_check.containers.manager import (
     create_podman_network,
-    clean_containers,
+    clean_containers_images,
+    stop_containers,
 )
 
 
@@ -121,11 +122,24 @@ def start(ctx: click.Context, from_datetime: str, to_datetime: str, since: int):
 @click.pass_context
 def stop(ctx: click.Context):
     """
-    Stop execution of Health Check and clean containers
+    Stop execution of Health Check and remove containers
 
     """
     verbose = ctx.obj["verbose"]
-    clean_containers(verbose=verbose)
+    stop_containers(verbose=verbose)
+    console.print(Markdown("# Execution Finished"))
+
+
+@cli.command()
+@click.pass_context
+def clean(ctx: click.Context):
+    """
+    Remove images for Health Check containers
+
+    """
+    verbose = ctx.obj["verbose"]
+    stop_containers(verbose=verbose)
+    clean_containers_images(verbose=verbose)
     console.print(Markdown("# Execution Finished"))
 
 

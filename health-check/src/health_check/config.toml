@@ -3,17 +3,17 @@ network_name = "health-check-network"
 
 [promtail]
 container_name = "health_check_promtail"
-image = "registry.opensuse.org/systemsmanagement/uyuni/healthcheck/containers/uyuni/health-check-promtail:latest"
+image = "registry.opensuse.org/systemsmanagement/uyuni/healthcheck/stable/containers/uyuni/health-check-promtail:latest"
 
 [loki]
 container_name = "health_check_loki"
 jobs = ["cobbler", "postgresql", "rhn", "apache"]
-image = "registry.opensuse.org/systemsmanagement/uyuni/healthcheck/containers/uyuni/health-check-loki:latest"
+image = "registry.opensuse.org/systemsmanagement/uyuni/healthcheck/stable/containers/uyuni/health-check-loki:latest"
 
 [exporter]
 container_name = "health_check_supportconfig_exporter"
-image = "registry.opensuse.org/systemsmanagement/uyuni/healthcheck/containers/uyuni/health-check-supportconfig-exporter:latest"
+image = "registry.opensuse.org/systemsmanagement/uyuni/healthcheck/stable/containers/uyuni/health-check-supportconfig-exporter:latest"
 
 [grafana]
 container_name = "health-check-grafana"
-image = "registry.opensuse.org/systemsmanagement/uyuni/healthcheck/containers/uyuni/health-check-grafana:latest"
+image = "registry.opensuse.org/systemsmanagement/uyuni/healthcheck/stable/containers/uyuni/health-check-grafana:latest"

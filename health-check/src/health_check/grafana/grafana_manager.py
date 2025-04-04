@@ -31,6 +31,7 @@ def prepare_grafana(from_datetime: str, to_datetime: str, verbose: bool):
             "run",
             "--replace",
             "--detach",
+            "--pull=newer",
             "--network",
             config.load_prop("podman.network_name"),
             "--publish",
