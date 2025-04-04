@@ -13,7 +13,7 @@ RUN zypper --non-interactive ref && zypper --non-interactive up && \
 ARG PRODUCT=Uyuni
 ARG VENDOR="Uyuni project"
 ARG URL="https://www.uyuni-project.org/"
-ARG REFERENCE_PREFIX="registry.opensuse.org/systemsmanagement/uyuni/healthcheck/uyuni"
+ARG REFERENCE_PREFIX="registry.opensuse.org/systemsmanagement/uyuni/healthcheck/containers/uyuni"
 
 # Build Service required labels
 # labelprefix=org.opensuse.uyuni.health-check-promtail
