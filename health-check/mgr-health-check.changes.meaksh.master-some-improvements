@@ -1,3 +1,0 @@
-- Use stable health check container images
-- Allow stoping containers without cleaning environment
-- Always pull newer container images

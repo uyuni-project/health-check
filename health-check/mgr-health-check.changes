@@ -1,4 +1,12 @@
 -------------------------------------------------------------------
+Fri Apr 04 16:42:38 WEST 2025 - psuarezhernandez@suse.com
+
+- version 0.1.2-0
+  * Use stable health check container images
+  * Allow stoping containers without cleaning environment
+  * Always pull newer container images
+
+-------------------------------------------------------------------
 Fri Apr 04 12:44:52 WEST 2025 - psuarezhernandez@suse.com
 
 - version 0.1.1-0
