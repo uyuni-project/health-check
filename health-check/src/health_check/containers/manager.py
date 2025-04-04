@@ -36,13 +36,13 @@ def network_exists(network: str) -> bool:
     return returncode == 0
 
 
-def clean_containers(verbose=False):
+def stop_containers(verbose=False):
     """
-    Remove the containers we spawned on the server now that everything is finished
+    Stop and remove the containers we spawned on the server now
+    that everything is finished
 
-    :param server: server to clean
+    :param verbose: server to clean
     """
-
     with console.status(status=None):
         console.log("[bold]Removing application containers")
         network = config.load_prop("podman.network_name")
@@ -53,12 +53,21 @@ def clean_containers(verbose=False):
                     "network",
                     "rm",
                     "-f",
+                    "--time",
+                    "0",
                     network,
                 ],
                 verbose,
             )
             console.log("[green]Containers have been removed")
 
+
+def clean_containers_images(verbose=False):
+    """
+    Remove all the containers images
+
+    """
+    with console.status(status=None):
         console.log("[bold]Removing all container images")
         for image in config.get_all_container_image_names():
             if image_exists(image):
