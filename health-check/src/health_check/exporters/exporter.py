@@ -29,6 +29,7 @@ def prepare_exporter(supportconfig_path: str, verbose: bool):
         "run",
         "--replace",
         "--detach",
+        "--pull=newer",
         "--network",
         config.load_prop("podman.network_name"),
         "--publish",

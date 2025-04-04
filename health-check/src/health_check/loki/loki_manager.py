@@ -35,6 +35,7 @@ def run_loki(supportconfig_path=None, verbose=False):
             "run",
             "--replace",
             "--detach",
+            "--pull=newer",
             "--network",
             network,
             "--publish",
@@ -54,6 +55,7 @@ def run_loki(supportconfig_path=None, verbose=False):
     podman_args = [
         "run",
         "--replace",
+        "--pull=newer",
         "--network",
         network,
         "--publish",
