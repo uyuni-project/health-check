@@ -17,8 +17,9 @@
 
 ## The productprettyname macros is controlled in the prjconf. If not defined, we fallback here
 %{!?productprettyname: %global productprettyname Uyuni}
-
+%{?!python_module:%define python_module() python-%{**} python3-%{**}}
 %{?sle15_python_module_pythons}
+
 Name:           mgr-health-check
 Version:        0.1.1
 Release:        0
