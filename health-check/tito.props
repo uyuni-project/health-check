@@ -1,0 +1,2 @@
+[buildconfig]
+tagger = custom.SUSEHealthCheckTagger

@@ -10,12 +10,26 @@
 Code for building packages in SUSE that need generated code not tracked in git.
 """
 import os
+import re
 import shutil
 import tarfile
 import subprocess
 
 from tito.builder import Builder
-from tito.common import  run_command, debug, info_out
+from tito.tagger import SUSETagger
+from tito.common import  run_command, debug, info_out, get_latest_tagged_version
+
+
+class SUSEHealthCheckTagger(SUSETagger):
+    def _update_package_metadata(self, new_version):
+        old_version = get_latest_tagged_version(self.project_name)
+        filename = os.path.join(self.git_root, "health-check/src/health_check/__init__.py")
+        parsed_old_version = re.findall(r'[0-9]+\.[0-9]+\.[0-9]+', old_version)[0]
+        parsed_new_version = re.findall(r'[0-9]+\.[0-9]+\.[0-9]+', new_version)[0]
+        run_command("sed -i \"s/%s/%s/g\" %s" % (parsed_old_version, parsed_new_version, filename))
+        run_command("git add %s" % filename)
+        super()._update_package_metadata(new_version)
+
 
 class SuseGitExtraGenerationBuilder(Builder):
 
