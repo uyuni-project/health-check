@@ -62,7 +62,7 @@ def run_loki(supportconfig_path=None, verbose=False):
         "9081:9081",
         "--detach",
         "--volume",
-        f'{config.get_config_file_path("promtail")}:/etc/promtail/config.yml',
+        f'{config.get_generated_config_file_path("promtail")}:/etc/promtail/config.yml',
         "--volume",
         f"{supportconfig_path}:{supportconfig_path}",
         "--name",

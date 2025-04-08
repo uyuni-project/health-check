@@ -5,12 +5,14 @@ containers
 """
 
 import functools
-import os
-from typing import Any, Dict, List
-import tomli
-from pathlib import Path
 import json
+import os
+import shutil
+from pathlib import Path
+from typing import Any, Dict, List
+
 import jinja2
+import tomli
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 CONFIG_DIR = os.path.join(BASE_DIR, "config")
@@ -19,6 +21,7 @@ CONTAINERS_DIR = os.path.join(BASE_DIR, "containers")
 CONFIG_TOML_PATH = os.environ.get(
     "HEALTH_CHECK_TOML", os.path.join(BASE_DIR, "config.toml")
 )
+GENERATED_CONFIG_DIR = os.path.expanduser("~/.local/share/health_check/")
 
 
 @functools.lru_cache
@@ -48,6 +51,10 @@ def get_config_dir_path(component: str) -> str:
     return os.path.join(CONFIG_DIR, component)
 
 
+def get_generated_config_dir_path(component: str) -> str:
+    return os.path.join(GENERATED_CONFIG_DIR, component)
+
+
 def load_prop(property_path: str) -> Any:
     res = parse_config().copy()
     for prop_part in property_path.split("."):
@@ -61,7 +68,11 @@ def load_prop(property_path: str) -> Any:
 
 
 def write_config(component: str, config_file_path: str, content: str, is_json=False):
-    basedir = Path(get_config_dir_path(component))
+    """
+    Store configuration content into config_file_path relative
+    to GENERATED_CONFIG_DIR
+    """
+    basedir = Path(get_generated_config_dir_path(component))
     if not basedir.exists():
         basedir.mkdir(parents=True)
     file_path = os.path.join(basedir, config_file_path)
@@ -72,8 +83,21 @@ def write_config(component: str, config_file_path: str, content: str, is_json=Fa
             file.write(content)
 
 
+def clean_config():
+    """
+    Remove all possible health check generated directories
+    containing config files under GENERATED_CONFIG_DIR
+    """
+    if os.path.exists(f"{GENERATED_CONFIG_DIR}"):
+        shutil.rmtree(f"{GENERATED_CONFIG_DIR}")
+
+
 def get_config_file_path(component):
     return os.path.join(get_config_dir_path(component), "config.yaml")
+
+
+def get_generated_config_file_path(component):
+    return os.path.join(get_generated_config_dir_path(component), "config.yaml")
 
 
 def get_sources_dir(component):

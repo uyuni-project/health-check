@@ -12,6 +12,7 @@ from pathlib import Path
 import re
 import signal
 import sys
+import tempfile
 from typing import Dict, Tuple
 import yaml
 import json
@@ -20,6 +21,8 @@ import http.server
 
 import static_metrics
 from static_metrics import metrics_config
+
+SUPPORTCONFIG_ETC_CONFIG = "/etc/supportconfig_exporter/config.yml"
 
 
 def sigterm_handler(**kwargs):
@@ -534,7 +537,7 @@ class SupportConfigMetricsCollector:
 
     def write_metrics(self):
         metrics = self.merge_metrics()
-        filename = Path("/opt/metrics/metrics.json")
+        filename = Path(os.path.join(tempfile.gettempdir(), "metrics/metrics.json"))
         filename.parent.mkdir(parents=True, exist_ok=True)
 
         with open(filename, "w", encoding="UTF-8") as f:
@@ -543,16 +546,18 @@ class SupportConfigMetricsCollector:
 
 class Handler(http.server.SimpleHTTPRequestHandler):
     def __init__(self, *args, **kwargs):
-        super().__init__(*args, directory="/opt/metrics", **kwargs)
+        super().__init__(
+            *args, directory=os.path.join(tempfile.gettempdir(), "metrics"), **kwargs
+        )
 
 
 def main():
     print("Supportconfig Exporter started")
-    if not os.path.exists("config.yml"):
-        print("Could not find config.yml")
+    if not os.path.exists(f"{SUPPORTCONFIG_ETC_CONFIG}"):
+        print(f"Could not find {SUPPORTCONFIG_ETC_CONFIG}")
         exit(1)
 
-    with open("config.yml", "r", encoding="UTF-8") as config_file:
+    with open(f"{SUPPORTCONFIG_ETC_CONFIG}", "r", encoding="UTF-8") as config_file:
         config = yaml.safe_load(config_file)
         port = int(config["port"])
         supportconfig_path = config["supportconfig_path"]

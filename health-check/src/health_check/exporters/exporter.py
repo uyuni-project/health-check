@@ -39,7 +39,7 @@ def prepare_exporter(supportconfig_path: str, verbose: bool):
         "--volume",
         f'{config.get_sources_dir("exporters")}:/opt',
         "--volume",
-        f'{config.get_config_file_path("exporter")}:/opt/config.yml',
+        f'{config.get_generated_config_file_path("exporter")}:/etc/supportconfig_exporter/config.yml',
         "--name",
         exporter_name,
         image,

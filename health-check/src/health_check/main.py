@@ -8,6 +8,7 @@ from rich.text import Text
 
 from health_check.grafana.grafana_manager import prepare_grafana
 import health_check.utils as utils
+import health_check.config as config
 from health_check.utils import console, HealthException
 from health_check.loki.loki_manager import run_loki
 from health_check.exporters import exporter
@@ -127,6 +128,7 @@ def stop(ctx: click.Context):
     """
     verbose = ctx.obj["verbose"]
     stop_containers(verbose=verbose)
+    config.clean_config()
     console.print(Markdown("# Execution Finished"))
 
 

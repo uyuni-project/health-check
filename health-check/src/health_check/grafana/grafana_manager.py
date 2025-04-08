@@ -43,7 +43,7 @@ def prepare_grafana(from_datetime: str, to_datetime: str, verbose: bool):
             "--volume",
             f"{grafana_cfg}/dashboard.yaml:/etc/grafana/provisioning/dashboards/main.yaml",
             "--volume",
-            f"{grafana_cfg}/dashboards:/var/lib/grafana/dashboards",
+            f'{config.get_generated_config_dir_path("grafana/dashboards")}:/var/lib/grafana/dashboards/',
             "--name",
             name,
             image,
