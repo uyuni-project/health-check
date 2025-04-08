@@ -84,10 +84,6 @@ def get_grafana_config_dir():
     return os.path.join(CONFIG_DIR, "grafana")
 
 
-def get_prometheus_config_dir():
-    return os.path.join(CONFIG_DIR, "prometheus")
-
-
 def get_all_container_image_names() -> List[str]:
     res = []
     conf = parse_config().copy()
