@@ -1,12 +1,10 @@
 """A module that manages the Grafana container"""
 
 import json
+
 from health_check import config
+from health_check.containers.manager import container_is_running, podman
 from health_check.utils import console
-from health_check.containers.manager import (
-    container_is_running,
-    podman,
-)
 
 
 def prepare_grafana(from_datetime: str, to_datetime: str, verbose: bool):

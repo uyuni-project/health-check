@@ -1,12 +1,10 @@
 """Module that controls the Loki and Promtail containers"""
 
 import os
+
 from health_check import config
+from health_check.containers.manager import container_is_running, podman
 from health_check.utils import console
-from health_check.containers.manager import (
-    container_is_running,
-    podman,
-)
 
 # Update this number if adding more targets to the promtail config
 PROMTAIL_TARGETS = 6

@@ -1,12 +1,12 @@
 """Utils module for various utility functions"""
 
-from datetime import datetime, timedelta
 import subprocess
+from datetime import datetime, timedelta
 from typing import List
+
 import click
 from rich.console import Console
 from rich.text import Text
-
 
 console = Console()
 

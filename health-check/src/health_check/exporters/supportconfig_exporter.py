@@ -6,20 +6,19 @@ Main supportconfig exporter module that collects metrics into a json file
 and serves the file by using an HTTP server.
 """
 
-from collections import defaultdict, namedtuple
+import http.server
+import json
 import os
-from pathlib import Path
 import re
 import signal
 import sys
 import tempfile
+from collections import defaultdict, namedtuple
+from pathlib import Path
 from typing import Dict, Tuple
-import yaml
-import json
-
-import http.server
 
 import static_metrics
+import yaml
 from static_metrics import metrics_config
 
 SUPPORTCONFIG_ETC_CONFIG = "/etc/supportconfig_exporter/config.yml"

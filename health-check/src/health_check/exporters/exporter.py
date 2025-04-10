@@ -1,11 +1,8 @@
 """Module that manages the supportconfig exporter container"""
 
 from health_check import config
+from health_check.containers.manager import container_is_running, podman
 from health_check.utils import console
-from health_check.containers.manager import (
-    podman,
-    container_is_running,
-)
 
 
 def prepare_exporter(supportconfig_path: str, verbose: bool):
