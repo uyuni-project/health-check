@@ -552,11 +552,11 @@ class Handler(http.server.SimpleHTTPRequestHandler):
 
 def main():
     print("Supportconfig Exporter started")
-    if not os.path.exists(f"{SUPPORTCONFIG_ETC_CONFIG}"):
+    if not os.path.exists(SUPPORTCONFIG_ETC_CONFIG):
         print(f"Could not find {SUPPORTCONFIG_ETC_CONFIG}")
         exit(1)
 
-    with open(f"{SUPPORTCONFIG_ETC_CONFIG}", "r", encoding="UTF-8") as config_file:
+    with open(SUPPORTCONFIG_ETC_CONFIG, "r", encoding="UTF-8") as config_file:
         config = yaml.safe_load(config_file)
         port = int(config["port"])
         supportconfig_path = config["supportconfig_path"]

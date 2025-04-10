@@ -15,8 +15,8 @@ import jinja2
 import tomli
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-CONFIG_DIR = os.path.join(BASE_DIR, "config")
-TEMPLATES_DIR = os.path.join(CONFIG_DIR, "templates")
+SOURCE_CONFIG_DIR = os.path.join(BASE_DIR, "config")
+TEMPLATES_DIR = os.path.join(SOURCE_CONFIG_DIR, "templates")
 CONTAINERS_DIR = os.path.join(BASE_DIR, "containers")
 CONFIG_TOML_PATH = os.environ.get(
     "HEALTH_CHECK_TOML", os.path.join(BASE_DIR, "config.toml")
@@ -47,11 +47,11 @@ def load_jinja_template(template: str) -> jinja2.Template:
     return _init_jinja_env().get_template(template)
 
 
+def get_config_sources_dir_path(component: str) -> str:
+    return os.path.join(SOURCE_CONFIG_DIR, component)
+
+
 def get_config_dir_path(component: str) -> str:
-    return os.path.join(CONFIG_DIR, component)
-
-
-def get_generated_config_dir_path(component: str) -> str:
     return os.path.join(GENERATED_CONFIG_DIR, component)
 
 
@@ -67,12 +67,23 @@ def load_prop(property_path: str) -> Any:
     return res
 
 
+def copy_config_sources(component: str):
+    """
+    Copy config sources for a compontent to the GENERATED_CONFIG_DIR
+    """
+    source_basedir = get_config_sources_dir_path(component)
+    target_basedir = Path(get_config_dir_path(component))
+    if target_basedir.exists():
+        shutil.rmtree(target_basedir)
+    shutil.copytree(source_basedir, target_basedir)
+
+
 def write_config(component: str, config_file_path: str, content: str, is_json=False):
     """
     Store configuration content into config_file_path relative
     to GENERATED_CONFIG_DIR
     """
-    basedir = Path(get_generated_config_dir_path(component))
+    basedir = Path(get_config_dir_path(component))
     if not basedir.exists():
         basedir.mkdir(parents=True)
     file_path = os.path.join(basedir, config_file_path)
@@ -88,24 +99,16 @@ def clean_config():
     Remove all possible health check generated directories
     containing config files under GENERATED_CONFIG_DIR
     """
-    if os.path.exists(f"{GENERATED_CONFIG_DIR}"):
-        shutil.rmtree(f"{GENERATED_CONFIG_DIR}")
+    if os.path.exists(GENERATED_CONFIG_DIR):
+        shutil.rmtree(GENERATED_CONFIG_DIR)
 
 
-def get_config_file_path(component):
+def get_config_file_path(component: str) -> str:
     return os.path.join(get_config_dir_path(component), "config.yaml")
 
 
-def get_generated_config_file_path(component):
-    return os.path.join(get_generated_config_dir_path(component), "config.yaml")
-
-
-def get_sources_dir(component):
+def get_sources_dir(component: str) -> str:
     return os.path.join(BASE_DIR, component)
-
-
-def get_grafana_config_dir():
-    return os.path.join(CONFIG_DIR, "grafana")
 
 
 def get_all_container_image_names() -> List[str]:

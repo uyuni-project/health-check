@@ -26,6 +26,7 @@ def run_loki(supportconfig_path=None, verbose=False):
         console.log("[yellow]Skipped, Loki container already exists")
         return
 
+    config.copy_config_sources("loki")
     promtail_template = config.load_jinja_template("promtail/promtail.yaml.j2")
     render_promtail_cfg(supportconfig_path, promtail_template)
     podman(
@@ -60,7 +61,7 @@ def run_loki(supportconfig_path=None, verbose=False):
         "9081:9081",
         "--detach",
         "--volume",
-        f'{config.get_generated_config_file_path("promtail")}:/etc/promtail/config.yml',
+        f'{config.get_config_file_path("promtail")}:/etc/promtail/config.yml',
         "--volume",
         f"{supportconfig_path}:{supportconfig_path}",
         "--name",
