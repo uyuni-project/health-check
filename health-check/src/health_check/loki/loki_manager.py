@@ -1,12 +1,10 @@
 """Module that controls the Loki and Promtail containers"""
 
 import os
+
 from health_check import config
+from health_check.containers.manager import container_is_running, podman
 from health_check.utils import console
-from health_check.containers.manager import (
-    container_is_running,
-    podman,
-)
 
 # Update this number if adding more targets to the promtail config
 PROMTAIL_TARGETS = 6
@@ -28,6 +26,7 @@ def run_loki(supportconfig_path=None, verbose=False):
         console.log("[yellow]Skipped, Loki container already exists")
         return
 
+    config.copy_config_sources("loki")
     promtail_template = config.load_jinja_template("promtail/promtail.yaml.j2")
     render_promtail_cfg(supportconfig_path, promtail_template)
     podman(

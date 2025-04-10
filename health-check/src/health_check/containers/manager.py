@@ -1,8 +1,9 @@
 """Module that contains podman-related functionality"""
 
 from typing import List
+
 from health_check import config
-from health_check.utils import run_command, console
+from health_check.utils import console, run_command
 
 
 def podman(cmd: List[str], verbose=False, raise_exc=True) -> List:

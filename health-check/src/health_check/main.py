@@ -1,21 +1,23 @@
 """Main module for the health check tool"""
 
-import click
 import os
+
+import click
 from rich.markdown import Markdown
 from rich.panel import Panel
 from rich.text import Text
 
-from health_check.grafana.grafana_manager import prepare_grafana
+import health_check.config as config
 import health_check.utils as utils
-from health_check.utils import console, HealthException
-from health_check.loki.loki_manager import run_loki
-from health_check.exporters import exporter
 from health_check.containers.manager import (
-    create_podman_network,
     clean_containers_images,
+    create_podman_network,
     stop_containers,
 )
+from health_check.exporters import exporter
+from health_check.grafana.grafana_manager import prepare_grafana
+from health_check.loki.loki_manager import run_loki
+from health_check.utils import HealthException, console
 
 
 @click.group()
@@ -127,6 +129,7 @@ def stop(ctx: click.Context):
     """
     verbose = ctx.obj["verbose"]
     stop_containers(verbose=verbose)
+    config.clean_config()
     console.print(Markdown("# Execution Finished"))
 
 
