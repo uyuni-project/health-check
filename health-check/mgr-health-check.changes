@@ -1,4 +1,11 @@
 -------------------------------------------------------------------
+Tue Apr 15 13:41:29 CEST 2025 - marek.czernek@suse.com
+
+- version 0.1.3-0
+  * Write configs in temporary files to allow non-root execution
+  * Remove prometheus leftovers after dropping it
+
+-------------------------------------------------------------------
 Mon Apr 07 10:15:53 WEST 2025 - psuarezhernandez@suse.com
 
 - version 0.1.2-0
