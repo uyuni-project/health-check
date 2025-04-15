@@ -1,12 +1,10 @@
 """A module that manages the Grafana container"""
 
 import json
+
 from health_check import config
+from health_check.containers.manager import container_is_running, podman
 from health_check.utils import console
-from health_check.containers.manager import (
-    container_is_running,
-    podman,
-)
 
 
 def prepare_grafana(from_datetime: str, to_datetime: str, verbose: bool):
@@ -18,6 +16,7 @@ def prepare_grafana(from_datetime: str, to_datetime: str, verbose: bool):
         console.log(f"[yellow]Skipped; {name} container is already running")
         return
 
+    config.copy_config_sources("grafana")
     grafana_cfg = config.get_config_dir_path("grafana")
     grafana_dasthboard_template = config.get_json_template_filepath(
         "grafana_dashboard/supportconfig_with_logs.template.json"
@@ -43,7 +42,7 @@ def prepare_grafana(from_datetime: str, to_datetime: str, verbose: bool):
             "--volume",
             f"{grafana_cfg}/dashboard.yaml:/etc/grafana/provisioning/dashboards/main.yaml",
             "--volume",
-            f"{grafana_cfg}/dashboards:/var/lib/grafana/dashboards",
+            f'{config.get_config_dir_path("grafana/dashboards")}:/var/lib/grafana/dashboards/',
             "--name",
             name,
             image,

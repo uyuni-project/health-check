@@ -1,11 +1,8 @@
 """Module that manages the supportconfig exporter container"""
 
 from health_check import config
+from health_check.containers.manager import container_is_running, podman
 from health_check.utils import console
-from health_check.containers.manager import (
-    podman,
-    container_is_running,
-)
 
 
 def prepare_exporter(supportconfig_path: str, verbose: bool):
@@ -39,7 +36,7 @@ def prepare_exporter(supportconfig_path: str, verbose: bool):
         "--volume",
         f'{config.get_sources_dir("exporters")}:/opt',
         "--volume",
-        f'{config.get_config_file_path("exporter")}:/opt/config.yml',
+        f'{config.get_config_file_path("exporter")}:/etc/supportconfig_exporter/config.yml',
         "--name",
         exporter_name,
         image,
