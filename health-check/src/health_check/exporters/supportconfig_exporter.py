@@ -509,6 +509,11 @@ class SupportConfigMetricsCollector:
         log_files = sorted(
             reposync_log_path.iterdir(), key=os.path.getmtime, reverse=True
         )
+
+        if len(log_files) == 0:
+            # no reposync logs
+            return
+
         most_recent_mtime = os.path.getmtime(log_files[0])
         one_day_seconds = 86400
 
