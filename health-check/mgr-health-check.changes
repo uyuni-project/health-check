@@ -1,4 +1,10 @@
 -------------------------------------------------------------------
+Mon May 05 10:22:15 CEST 2025 - marek.czernek@suse.com
+
+- version 0.1.4-0
+  * Handle gracefully lack of reposync logs
+
+-------------------------------------------------------------------
 Tue Apr 15 13:41:29 CEST 2025 - marek.czernek@suse.com
 
 - version 0.1.3-0
