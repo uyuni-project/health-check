@@ -116,7 +116,8 @@ class SupportConfigMetricsCollector:
 
             if not shared_buffers.isnumeric():
                 log.error(
-                    f"Error when parsing shared_buffers; expected int, got: {shared_buffers}"
+                    "Error when parsing shared_buffers; expected int, got: %s",
+                    shared_buffers,
                 )
                 return
 
@@ -130,7 +131,7 @@ class SupportConfigMetricsCollector:
             elif buffer_unit == "gb":
                 shared_buffers *= 1024 * 1024
             else:
-                log.error(f"Error when parsing shared buffer unit: {buffer_unit}")
+                log.error("Error when parsing shared buffer unit: %s", buffer_unit)
                 return
 
             self.shared_buffers_to_mem_ratio = round(shared_buffers / memory, 2)
@@ -170,7 +171,8 @@ class SupportConfigMetricsCollector:
                     self.max_clients = int(max_clients)
                 except ValueError:
                     log.error(
-                        f"Error when parsing max_clients; expected int, got: {max_clients}"
+                        "Error when parsing max_clients; expected int, got: %s",
+                        max_clients,
                     )
 
             if server_lim_match:
@@ -179,7 +181,8 @@ class SupportConfigMetricsCollector:
                     self.server_limit = int(server_limit)
                 except ValueError:
                     log.error(
-                        f"Error when parsing ServerLimit; expected int, got: {server_limit}"
+                        "Error when parsing ServerLimit; expected int, got: %s",
+                        server_limit,
                     )
 
     def parse_roles(self):
@@ -250,7 +253,7 @@ class SupportConfigMetricsCollector:
         elif unit == "n/a":
             ...  # no unit
         else:
-            log.error(f"Error when parsing shared buffer unit: {unit}")
+            log.error("Error when parsing shared buffer unit: %s", unit)
 
         res["too_small"] = 1 if min_size_gb > size else 0
         return res
@@ -343,7 +346,7 @@ class SupportConfigMetricsCollector:
 
         paths = (
             self._gen_mounts_for_checking()
-            .get(int(self.version.split(".")[0]), {})
+            .get(int(self.version.split(".", maxsplit=1)[0]), {})
             .get(role, {})
         )
         if not paths:
@@ -358,7 +361,7 @@ class SupportConfigMetricsCollector:
             )
             fs_obj = self._check_vol_params(mount, path.min_size_gb, fs)
             if not fs_obj:
-                log.error(f"Could not find {mount}")
+                log.error("Could not find %s", mount)
                 continue
             mounts[fs_obj["mount"]].append(fs_obj)
 
@@ -571,7 +574,7 @@ class Handler(http.server.SimpleHTTPRequestHandler):
 def main():
     log.info("Supportconfig Exporter started")
     if not os.path.exists(SUPPORTCONFIG_ETC_CONFIG):
-        log.error(f"Could not find {SUPPORTCONFIG_ETC_CONFIG}")
+        log.error("Could not find %s", SUPPORTCONFIG_ETC_CONFIG)
         exit(1)
 
     with open(SUPPORTCONFIG_ETC_CONFIG, "r", encoding="UTF-8") as config_file:
@@ -582,7 +585,7 @@ def main():
     collector = SupportConfigMetricsCollector(supportconfig_path)
     collector.write_metrics()
     with http.server.ThreadingHTTPServer(("", port), Handler) as httpd:
-        log.info(f"serving at port {port}")
+        log.info("serving at port %s", port)
         httpd.serve_forever()
 
 
