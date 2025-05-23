@@ -52,7 +52,7 @@ class SupportConfigMetricsCollector:
         self.server_limit = -1
         self.num_of_channels = -1
         self.shared_buffers_to_mem_ratio = -1
-        self.major_version = -1
+        self.version = ""
         self.fs_mount_insufficient = -1
         self.fs_mount_out_of_space = -1
         self.roles = [
@@ -333,7 +333,9 @@ class SupportConfigMetricsCollector:
         role = role.pop()["name"]
 
         paths = (
-            self._gen_mounts_for_checking().get(self.major_version, {}).get(role, {})
+            self._gen_mounts_for_checking()
+            .get(int(self.version.split(".")[0]), {})
+            .get(role, {})
         )
         if not paths:
             print("Cannot determine filesystem requirements")

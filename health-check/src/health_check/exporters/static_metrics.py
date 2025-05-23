@@ -105,9 +105,9 @@ metrics_config = {
         "pattern": r"Swap:\s+\d+\s+\d+\s+(\d+)",
         "label": "memory",
     },
-    "major_version": {
+    "version": {
         "filepath": "basic-environment.txt",
-        "pattern": r"^SUSE Manager release (\d)",
+        "pattern": r"(?:^SUSE Manager release ([\d.]+)|^SUSE Multi-Linux Manager release [\d.]+ \(([\d\w.\ ]+)\))",
         "label": "misc",
     },
 }
@@ -159,6 +159,8 @@ class LogFileStaticMetric(StaticMetric):
                     return int(xmx_value) * 1024
                 if xmx_unit == "g" or xmx_unit == "G":
                     return int(xmx_value) * 1024 * 1024
+            elif self.name == "version":
+                return match.group(1) or match.group(2)
             else:
                 return int(match.group(1))
 
