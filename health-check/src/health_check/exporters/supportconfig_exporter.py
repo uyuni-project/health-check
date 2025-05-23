@@ -512,11 +512,13 @@ class SupportConfigMetricsCollector:
         Approximate the number of active channels by counting reposync log files modified within 24h
         of the most recently modified file.
         """
+        self.num_of_channels = 0
         reposync_log_path = Path(
             f"{self.supportconfig_path}/spacewalk-debug/rhn-logs/rhn/reposync"
         )
         if not reposync_log_path.exists():
             return
+
         log_files = sorted(
             reposync_log_path.iterdir(), key=os.path.getmtime, reverse=True
         )
