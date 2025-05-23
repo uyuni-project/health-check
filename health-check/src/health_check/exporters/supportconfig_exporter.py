@@ -146,7 +146,7 @@ class SupportConfigMetricsCollector:
             content = f.read()
             # Parse contents of server-tuning.conf first
             file_regex = (
-                r"(?s)/etc/apache2/server-tuning.conf(.*?)\[ Configuration File \]"
+                r"(?s)# /etc/apache2/server-tuning.conf(.*?)\[ Configuration File \]"
             )
             # Then, parse the MaxRequestWorkers property from the prefork part
             max_req_regex = r"(?s)<IfModule prefork\.c>(.*?)MaxRequestWorkers\s+(\d+)$"
