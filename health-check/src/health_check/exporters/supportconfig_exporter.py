@@ -344,11 +344,12 @@ class SupportConfigMetricsCollector:
             return
         role = role.pop()["name"]
 
-        paths = (
-            self._gen_mounts_for_checking()
-            .get(int(self.version.split(".", maxsplit=1)[0]), {})
-            .get(role, {})
-        )
+        try:
+            major_version = int(self.version.split(".", maxsplit=1)[0])
+        except ValueError:
+            major_version = None
+
+        paths = self._gen_mounts_for_checking().get(major_version, {}).get(role, {})
         if not paths:
             log.error("Cannot determine filesystem requirements")
             return

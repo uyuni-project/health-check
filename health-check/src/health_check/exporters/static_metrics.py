@@ -107,8 +107,16 @@ metrics_config = {
     },
     "version": {
         "filepath": "basic-environment.txt",
-        "pattern": r"(?:^SUSE Manager release ([\d.]+)|^SUSE Multi-Linux Manager release [\d.]+ \(([\d\w.\ ]+)\))",
+        # This pattern matches and extract the appropiated version
+        # from the following supported releases file content:
+        #
+        # - SUSE Manager release 4.3 (2025.05)
+        # - SUSE Multi-Linux Manager release 5.1 (5.1.0 RC)
+        # - Uyuni release 2025.05
+        #
+        "pattern": r"^(?:SUSE (?:Manager release ([\d.]+)|Multi-Linux Manager release [\d.]+ \(([\d\w.\ ]+)\))|Uyuni release ([\d.]+))",
         "label": "misc",
+        "default": "unknown",
     },
 }
 
@@ -160,7 +168,7 @@ class LogFileStaticMetric(StaticMetric):
                 if xmx_unit == "g" or xmx_unit == "G":
                     return int(xmx_value) * 1024 * 1024
             elif self.name == "version":
-                return match.group(1) or match.group(2)
+                return match.group(1) or match.group(2) or match.group(3)
             else:
                 return int(match.group(1))
 
