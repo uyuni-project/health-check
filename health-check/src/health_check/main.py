@@ -6,6 +6,7 @@ import click
 from rich.markdown import Markdown
 from rich.panel import Panel
 from rich.text import Text
+from rich.prompt import Confirm
 
 import health_check.config as config
 import health_check.utils as utils
@@ -88,6 +89,13 @@ def start(ctx: click.Context, from_datetime: str, to_datetime: str, since: int):
             "[red bold]A valid supportconfig cannot be found in the provided path, exitting"
         )
         exit(1)
+
+    if not os.path.exists(os.path.join(supportconfig_path, "spacewalk-debug")):
+        console.log(
+            "[red bold]The provided supportconfig seems not generated inside an Uyuni or SUSE Multi-Linux Manager server. Some metrics might be missing."
+        )
+        if not Confirm.ask("Do you want to continue anyway?", default=False):
+            exit(1)
 
     period_start, period_end = utils.get_dates(since)
 
