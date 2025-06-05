@@ -114,7 +114,7 @@ metrics_config = {
         # - SUSE Multi-Linux Manager release 5.1 (5.1.0 RC)
         # - Uyuni release 2025.05
         #
-        "pattern": r"^(?:SUSE (?:Manager release ([\d.]+)|Multi-Linux Manager release [\d.]+ \(([\d\w.\ ]+)\))|Uyuni release ([\d.]+))",
+        "pattern": r"^(?:SUSE (?:Manager release (?P<suma_release>[\d.]+)|Multi-Linux Manager release [\d.]+ \((?P<smlm_release>[\d\w.\ ]+)\))|Uyuni release (?P<uyuni_release>[\d.]+))$",
         "label": "misc",
         "default": "unknown",
     },
@@ -168,7 +168,7 @@ class LogFileStaticMetric(StaticMetric):
                 if xmx_unit == "g" or xmx_unit == "G":
                     return int(xmx_value) * 1024 * 1024
             elif self.name == "version":
-                return match.group(1) or match.group(2) or match.group(3)
+                return match.group("suma_release") or match.group("smlm_release") or match.group("uyuni_release")
             else:
                 return int(match.group(1))
 
