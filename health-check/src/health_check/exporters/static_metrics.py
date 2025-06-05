@@ -105,10 +105,18 @@ metrics_config = {
         "pattern": r"Swap:\s+\d+\s+\d+\s+(\d+)",
         "label": "memory",
     },
-    "major_version": {
+    "version": {
         "filepath": "basic-environment.txt",
-        "pattern": r"^SUSE Manager release (\d)",
+        # This pattern matches and extract the appropiated version
+        # from the following supported releases file content:
+        #
+        # - SUSE Manager release 4.3 (2025.05)
+        # - SUSE Multi-Linux Manager release 5.1 (5.1.0 RC)
+        # - Uyuni release 2025.05
+        #
+        "pattern": r"^(?:SUSE (?:Manager release (?P<suma_release>[\d.]+)|Multi-Linux Manager release [\d.]+ \((?P<smlm_release>[\d\w.\ ]+)\))|Uyuni release (?P<uyuni_release>[\d.]+))$",
         "label": "misc",
+        "default": "unknown",
     },
 }
 
@@ -159,6 +167,12 @@ class LogFileStaticMetric(StaticMetric):
                     return int(xmx_value) * 1024
                 if xmx_unit == "g" or xmx_unit == "G":
                     return int(xmx_value) * 1024 * 1024
+            elif self.name == "version":
+                return (
+                    match.group("suma_release")
+                    or match.group("smlm_release")
+                    or match.group("uyuni_release")
+                )
             else:
                 return int(match.group(1))
 

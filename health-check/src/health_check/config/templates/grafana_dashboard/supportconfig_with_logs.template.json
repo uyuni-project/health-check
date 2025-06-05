@@ -1084,7 +1084,7 @@
           "global_query_id": "",
           "parser": "backend",
           "refId": "A",
-          "root_selector": "misc[name = \"major_version\"]",
+          "root_selector": "misc[name = \"version\"]",
           "source": "url",
           "type": "json",
           "url": "http://health_check_supportconfig_exporter:9000/metrics.json",
@@ -1094,7 +1094,7 @@
           }
         }
       ],
-      "title": "Server major version",
+      "title": "Server version",
       "transformations": [
         {
           "id": "convertFieldType",
@@ -1302,13 +1302,13 @@
         {
           "columns": [],
           "computed_columns": [],
-          "filterExpression": "(name == \"master\" || name == \"proxy\" || name == \"client\") && value == 1",
+          "filterExpression": "value == 1",
           "filters": [],
           "format": "table",
           "global_query_id": "",
           "parser": "backend",
           "refId": "A",
-          "root_selector": "misc",
+          "root_selector": "misc[name='proxy' or name='master' or name='client']",
           "source": "url",
           "type": "json",
           "url": "http://health_check_supportconfig_exporter:9000/metrics.json",

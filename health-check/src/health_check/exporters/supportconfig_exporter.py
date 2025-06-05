@@ -8,6 +8,7 @@ and serves the file by using an HTTP server.
 
 import http.server
 import json
+import logging
 import os
 import re
 import signal
@@ -23,10 +24,18 @@ from static_metrics import metrics_config
 
 SUPPORTCONFIG_ETC_CONFIG = "/etc/supportconfig_exporter/config.yml"
 
+log = logging.getLogger(__name__)
+log.setLevel(logging.INFO)
+handler = logging.StreamHandler(sys.stdout)
+handler.setLevel(logging.INFO)
+formatter = logging.Formatter("%(asctime)s - %(name)s - %(levelname)s - %(message)s")
+handler.setFormatter(formatter)
+log.addHandler(handler)
+
 
 def sigterm_handler(**kwargs):
     del kwargs  # unused
-    print("Detected SIGTERM. Exiting.")
+    log.info("Detected SIGTERM. Exiting.")
     sys.exit(0)
 
 
@@ -52,7 +61,7 @@ class SupportConfigMetricsCollector:
         self.server_limit = -1
         self.num_of_channels = -1
         self.shared_buffers_to_mem_ratio = -1
-        self.major_version = -1
+        self.version = ""
         self.fs_mount_insufficient = -1
         self.fs_mount_out_of_space = -1
         self.roles = [
@@ -106,8 +115,9 @@ class SupportConfigMetricsCollector:
             buffer_unit = match.group(2)
 
             if not shared_buffers.isnumeric():
-                print(
-                    f"Error when parsing shared_buffers; expected int, got: {shared_buffers}"
+                log.error(
+                    "Error when parsing shared_buffers; expected int, got: %s",
+                    shared_buffers,
                 )
                 return
 
@@ -121,7 +131,7 @@ class SupportConfigMetricsCollector:
             elif buffer_unit == "gb":
                 shared_buffers *= 1024 * 1024
             else:
-                print(f"Error when parsing shared buffer unit: {buffer_unit}")
+                log.error("Error when parsing shared buffer unit: %s", buffer_unit)
                 return
 
             self.shared_buffers_to_mem_ratio = round(shared_buffers / memory, 2)
@@ -137,7 +147,7 @@ class SupportConfigMetricsCollector:
             content = f.read()
             # Parse contents of server-tuning.conf first
             file_regex = (
-                r"(?s)/etc/apache2/server-tuning.conf(.*?)\[ Configuration File \]"
+                r"(?s)# /etc/apache2/server-tuning.conf(.*?)\[ Configuration File \]"
             )
             # Then, parse the MaxRequestWorkers property from the prefork part
             max_req_regex = r"(?s)<IfModule prefork\.c>(.*?)MaxRequestWorkers\s+(\d+)$"
@@ -160,8 +170,9 @@ class SupportConfigMetricsCollector:
                     max_clients = max_req_match.groups()[-1]
                     self.max_clients = int(max_clients)
                 except ValueError:
-                    print(
-                        f"Error when parsing max_clients; expected int, got: {max_clients}"
+                    log.error(
+                        "Error when parsing max_clients; expected int, got: %s",
+                        max_clients,
                     )
 
             if server_lim_match:
@@ -169,8 +180,9 @@ class SupportConfigMetricsCollector:
                     server_limit = server_lim_match.groups()[-1]
                     self.server_limit = int(server_limit)
                 except ValueError:
-                    print(
-                        f"Error when parsing ServerLimit; expected int, got: {server_limit}"
+                    log.error(
+                        "Error when parsing ServerLimit; expected int, got: %s",
+                        server_limit,
                     )
 
     def parse_roles(self):
@@ -241,7 +253,7 @@ class SupportConfigMetricsCollector:
         elif unit == "n/a":
             ...  # no unit
         else:
-            print(f"Error when parsing shared buffer unit: {unit}")
+            log.error("Error when parsing shared buffer unit: %s", unit)
 
         res["too_small"] = 1 if min_size_gb > size else 0
         return res
@@ -326,17 +338,20 @@ class SupportConfigMetricsCollector:
 
         role = [role for role in self.roles if role["value"] == 1]
         if not role:
-            print(
+            log.error(
                 "Cannot determine filesystem requirements; cannot determine server role (master, minion, proxy?)"
             )
             return
         role = role.pop()["name"]
 
-        paths = (
-            self._gen_mounts_for_checking().get(self.major_version, {}).get(role, {})
-        )
+        try:
+            major_version = int(self.version.split(".", maxsplit=1)[0])
+        except ValueError:
+            major_version = None
+
+        paths = self._gen_mounts_for_checking().get(major_version, {}).get(role, {})
         if not paths:
-            print("Cannot determine filesystem requirements")
+            log.error("Cannot determine filesystem requirements")
             return
 
         for path in paths:
@@ -347,7 +362,7 @@ class SupportConfigMetricsCollector:
             )
             fs_obj = self._check_vol_params(mount, path.min_size_gb, fs)
             if not fs_obj:
-                print(f"Could not find {mount}")
+                log.error("Could not find %s", mount)
                 continue
             mounts[fs_obj["mount"]].append(fs_obj)
 
@@ -501,11 +516,13 @@ class SupportConfigMetricsCollector:
         Approximate the number of active channels by counting reposync log files modified within 24h
         of the most recently modified file.
         """
+        self.num_of_channels = 0
         reposync_log_path = Path(
             f"{self.supportconfig_path}/spacewalk-debug/rhn-logs/rhn/reposync"
         )
         if not reposync_log_path.exists():
             return
+
         log_files = sorted(
             reposync_log_path.iterdir(), key=os.path.getmtime, reverse=True
         )
@@ -556,9 +573,9 @@ class Handler(http.server.SimpleHTTPRequestHandler):
 
 
 def main():
-    print("Supportconfig Exporter started")
+    log.info("Supportconfig Exporter started")
     if not os.path.exists(SUPPORTCONFIG_ETC_CONFIG):
-        print(f"Could not find {SUPPORTCONFIG_ETC_CONFIG}")
+        log.error("Could not find %s", SUPPORTCONFIG_ETC_CONFIG)
         exit(1)
 
     with open(SUPPORTCONFIG_ETC_CONFIG, "r", encoding="UTF-8") as config_file:
@@ -569,7 +586,7 @@ def main():
     collector = SupportConfigMetricsCollector(supportconfig_path)
     collector.write_metrics()
     with http.server.ThreadingHTTPServer(("", port), Handler) as httpd:
-        print("serving at port", port)
+        log.info("serving at port %s", port)
         httpd.serve_forever()
 
 
