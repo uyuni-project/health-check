@@ -1,4 +1,15 @@
 -------------------------------------------------------------------
+Thu Jun 05 12:08:19 WEST 2025 - psuarezhernandez@suse.com
+
+- version 0.1.5-0
+  * Ask for user confirmation in case spacewalk-debug
+    is missing in the supportconfig
+  * Enhance server version metric to work with version 5.1
+  * Make logging messages to appear in container logs
+  * Collect apache metrics properly in latest supportconfigs
+  * Set num_of_channels metric to zero when no channels are found
+
+-------------------------------------------------------------------
 Mon May 05 10:22:15 CEST 2025 - marek.czernek@suse.com
 
 - version 0.1.4-0
