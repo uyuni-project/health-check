@@ -10,21 +10,18 @@ groups:
           condition: B
           data:
             - refId: A
-              queryType: range
+              queryType: instant
               relativeTimeRange:
                 from: 2592000
                 to: 0
               datasourceUid: P8E80F9AEF21F6940
               model:
-                direction: backward
                 editorMode: builder
                 expr: sum(count_over_time({job="salt"} |~ `(?i)SaltReqTimeoutError` [$__auto]))
                 intervalMs: 1000
-                legendFormat: ""
                 maxDataPoints: 43200
-                queryType: range
+                queryType: instant
                 refId: A
-                step: ""
             - refId: B
               datasourceUid: __expr__
               model:
