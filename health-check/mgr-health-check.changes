@@ -1,4 +1,10 @@
 -------------------------------------------------------------------
+Thu Jun 05 13:23:33 WEST 2025 - psuarezhernandez@suse.com
+
+- version 0.1.6-0
+  * Fix server version detection for 4.3 and 5.0
+
+-------------------------------------------------------------------
 Thu Jun 05 12:08:19 WEST 2025 - psuarezhernandez@suse.com
 
 - version 0.1.5-0
