@@ -111,10 +111,11 @@ metrics_config = {
         # from the following supported releases file content:
         #
         # - SUSE Manager release 4.3 (2025.05)
+        # - SUSE Manager release 5.0 (5.0.1)
         # - SUSE Multi-Linux Manager release 5.1 (5.1.0 RC)
         # - Uyuni release 2025.05
         #
-        "pattern": r"^(?:SUSE (?:Manager release (?P<suma_release>[\d.]+)|Multi-Linux Manager release [\d.]+ \((?P<smlm_release>[\d\w.\ ]+)\))|Uyuni release (?P<uyuni_release>[\d.]+))$",
+        "pattern": r"^(?:SUSE (?:Manager release (?P<suma_release>[\d.]+) \([\d.]+\)|Multi-Linux Manager release [\d.]+ \((?P<smlm_release>[\d\w.\ ]+)\))|Uyuni release (?P<uyuni_release>[\d.]+))$",
         "label": "misc",
         "default": "unknown",
     },
