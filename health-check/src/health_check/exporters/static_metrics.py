@@ -168,7 +168,11 @@ class LogFileStaticMetric(StaticMetric):
                 if xmx_unit == "g" or xmx_unit == "G":
                     return int(xmx_value) * 1024 * 1024
             elif self.name == "version":
-                return match.group("suma_release") or match.group("smlm_release") or match.group("uyuni_release")
+                return (
+                    match.group("suma_release")
+                    or match.group("smlm_release")
+                    or match.group("uyuni_release")
+                )
             else:
                 return int(match.group(1))
 
