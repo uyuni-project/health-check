@@ -10,21 +10,18 @@ groups:
           condition: B
           data:
             - refId: A
-              queryType: range
+              queryType: instant
               relativeTimeRange:
                 from: 2592000
                 to: 0
               datasourceUid: P8E80F9AEF21F6940
               model:
-                direction: backward
                 editorMode: builder
                 expr: sum(count_over_time({job="salt"} |~ `(?i)SaltReqTimeoutError` [$__auto]))
                 intervalMs: 1000
-                legendFormat: ""
                 maxDataPoints: 43200
-                queryType: range
+                queryType: instant
                 refId: A
-                step: ""
             - refId: B
               datasourceUid: __expr__
               model:
@@ -55,7 +52,10 @@ groups:
           execErrState: Error
           for: 0s
           annotations:
-            summary: We detected more than 10 `SaltReqTimeout` errors in the logs in the past 1 month. This is likely indicative of Salt performance issues.
+            summary: |-
+              We detected more than 10 `SaltReqTimeout` errors in the logs in the past 1 month. 
+
+              This is likely indicative of Salt performance issues.
           labels:
             component: salt
             issue: performance_issue
@@ -107,7 +107,10 @@ groups:
           execErrState: Error
           for: 0s
           annotations:
-            summary: "We found more than 150 of \"an extra return was detected\", \"the public keys did not match\", \"Event with bad payload received\", or \"Received minion error from\" messages in the logs over the past month. \n\nThese issues might be decreasing Salt performance."
+            summary: |-
+              We found more than 150 of "an extra return was detected", "the public keys did not match", "Event with bad payload received", or "Received minion error from" messages in the logs over the past month.
+
+              These issues might be decreasing Salt performance.
           labels:
             component: salt
             issue: performance_issue
@@ -638,7 +641,12 @@ groups:
           execErrState: Error
           for: 0s
           annotations:
-            summary: "When client count reaches several thousands and actions are not executed quickly enough, increase the java.salt_batch_size property. \n\nSee the performance tuning guide for more information."
+            summary: |- 
+              We detected that there are more than 2000 clients and java.salt_batch_size is <= 200.
+
+              When client count reaches several thousands and actions are not executed quickly enough, increase the java.salt_batch_size property.
+
+              See the performance tuning guide for more information.
           labels:
             component: config
             issue: performance_issue
@@ -691,6 +699,8 @@ groups:
           for: 0s
           annotations:
             summary: |-
+                We detected more than 50 `AH00161` or `server reached MaxRequestWorkers setting` errors in the past month.
+
                 There are more requests than the maximum number of HTTP requests served simultaneously by Apache httpd.
 
                 Increase MaxClients and ServerLimit, and check maxThreads for adjustment.
@@ -934,6 +944,8 @@ groups:
           for: 0s
           annotations:
             summary: |-
+                We detected more than 50 `AH00992`, `AH00877`, or `AH01030` errors in the past month.
+
                 The connectionTimeout and keepAliveTimeout properties might be incorrectly set.
 
                 See the performance tuning guide for more information.
@@ -1246,6 +1258,8 @@ groups:
           for: 0s
           annotations:
             summary: |-
+                We detected that there are more than 2000 clients while org.quartz.threadPool.threadCount <= 20.
+
                 Increasing the number of Taskomatic worker threads allows Taskomatic to serve more clients in parallel. Consider increasing the org.quartz.threadPool.threadCount property.
 
                 Afterwards, check hibernate.c3p0.max_size and thread_pool for adjustment.
@@ -1341,6 +1355,8 @@ groups:
           for: 0s
           annotations:
             summary: |-
+                We detected that there are more than 2000 clients and `org.quartz.scheduler.idleWaitTime` is >= 5000.
+
                 Cycle time for Taskomatic. Consider decreasing org.quartz.scheduler.idleWaitTime to lower the latency of Taskomatic.
 
                 See the performance tuning guide for more information.
@@ -1500,6 +1516,8 @@ groups:
           annotations:
             summary: |-
                 shared_buffers controls the amount of memory reserved for PostgreSQL shared buffers, which contain caches of database tables and index data.
+
+                We detected that the ratio of `shared_buffers` to available ram is below 0.2.
 
                 Consider increasing the value for PostgreSQL performance in large deployments.
 
@@ -1678,6 +1696,8 @@ groups:
           for: 0s
           annotations:
             summary: |-
+                We detected more than 20 `SaltReqTimeoutError` or `Message timed out` errors in the past month.
+
                 worker_threads configures the number of salt-master worker threads that process commands and replies from minions and the Salt API. Consider increasing this value.
 
                 See the performance tuning guide for more information.
@@ -1759,6 +1779,8 @@ groups:
           for: 0s
           annotations:
             summary: |-
+                We detected more than 5 `Salt request timed out` errors in the past month while the pub_hwm value is less than 10000.
+
                 pub_hwm sets the maximum number of outstanding messages sent by salt-master. If more than this number of messages need to be sent concurrently, communication with clients slows down, potentially resulting in timeout errors during load peaks.
 
                 See the performance tuning guide for more information.
