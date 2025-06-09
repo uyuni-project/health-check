@@ -1,0 +1,2 @@
+- Remove configs when executing the 'clean' command
+- Move supportconfig exporter scripts into the container build
