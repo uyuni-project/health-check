@@ -29,7 +29,8 @@ LABEL org.opensuse.reference="${REFERENCE_PREFIX}/health-check-supportconfig-exp
 # endlabelprefix
 LABEL org.uyuni.version="${PRODUCT_VERSION}"
 
-COPY static_metrics.py supportconfig_exporter.py /opt/
+COPY supportconfig_exporter.py /opt/
+COPY static_metrics.py /opt/
 
 WORKDIR /opt/
 ENTRYPOINT ["python3.11", "/opt/supportconfig_exporter.py"]
