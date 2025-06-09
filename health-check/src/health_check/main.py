@@ -151,6 +151,7 @@ def clean(ctx: click.Context):
     verbose = ctx.obj["verbose"]
     stop_containers(verbose=verbose)
     clean_containers_images(verbose=verbose)
+    config.clean_config()
     console.print(Markdown("# Execution Finished"))
 
 
