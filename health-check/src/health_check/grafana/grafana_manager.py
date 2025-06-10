@@ -7,7 +7,9 @@ from health_check.containers.manager import container_is_running, podman
 from health_check.utils import console
 
 
-def prepare_grafana(from_datetime: str, to_datetime: str, verbose: bool):
+def prepare_grafana(
+    from_datetime: str, to_datetime: str, verbose: bool, iface="127.0.0.1"
+):
     name = config.load_prop("grafana.container_name")
     image = config.load_prop("grafana.image")
     console.log("[bold]Deploying Grafana")
@@ -34,7 +36,7 @@ def prepare_grafana(from_datetime: str, to_datetime: str, verbose: bool):
             "--network",
             config.load_prop("podman.network_name"),
             "--publish",
-            "3000:3000",
+            f"{iface}:3000:3000",
             "--volume",
             f"{grafana_cfg}/alerts.yaml:/etc/grafana/provisioning/alerting/alerts.yaml",
             "--volume",

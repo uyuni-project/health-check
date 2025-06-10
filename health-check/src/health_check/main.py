@@ -65,8 +65,17 @@ def cli(ctx: click.Context, supportconfig_path: str, verbose: bool):
     help="Exclude logs after this date (in ISO 8601 format)",
     callback=utils.validate_date,
 )
+@click.option(
+    "-p",
+    "--public",
+    is_flag=True,
+    default=False,
+    help="Expose ports on all interfaces (0.0.0.0)",
+)
 @click.pass_context
-def start(ctx: click.Context, from_datetime: str, to_datetime: str, since: int):
+def start(
+    ctx: click.Context, from_datetime: str, to_datetime: str, since: int, public: bool
+):
     """
     Start execution of Health Check
 
@@ -75,6 +84,7 @@ def start(ctx: click.Context, from_datetime: str, to_datetime: str, since: int):
     """
     verbose: bool = ctx.obj["verbose"]
     supportconfig_path: str | None = ctx.obj["supportconfig_path"]
+    iface = "0.0.0.0" if public else "127.0.0.1"
 
     # Try to resolve an absolute path to the supportconfig
     if supportconfig_path:
@@ -107,9 +117,9 @@ def start(ctx: click.Context, from_datetime: str, to_datetime: str, since: int):
     try:
         with console.status(status=None):
             create_podman_network(verbose=verbose)
-            run_loki(supportconfig_path, verbose)
-            exporter.prepare_exporter(supportconfig_path, verbose)
-            prepare_grafana(from_datetime, to_datetime, verbose)
+            run_loki(supportconfig_path, verbose, iface)
+            exporter.prepare_exporter(supportconfig_path, verbose, iface)
+            prepare_grafana(from_datetime, to_datetime, verbose, iface)
 
         console.print(
             Panel(

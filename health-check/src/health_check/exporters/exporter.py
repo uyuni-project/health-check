@@ -5,7 +5,7 @@ from health_check.containers.manager import container_is_running, podman
 from health_check.utils import console
 
 
-def prepare_exporter(supportconfig_path: str, verbose: bool):
+def prepare_exporter(supportconfig_path: str, verbose: bool, iface="127.0.0.1"):
     """
     Build the exporter image and deploy it on the server
 
@@ -30,7 +30,7 @@ def prepare_exporter(supportconfig_path: str, verbose: bool):
         "--network",
         config.load_prop("podman.network_name"),
         "--publish",
-        "9000:9000",
+        f"{iface}:9000:9000",
         "--volume",
         f"{supportconfig_path}:{supportconfig_path}",
         "--volume",
