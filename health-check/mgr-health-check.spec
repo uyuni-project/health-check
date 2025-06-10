@@ -21,7 +21,7 @@
 %{?sle15_python_module_pythons}
 
 Name:           mgr-health-check
-Version:        0.1.7
+Version:        0.1.8
 Release:        0
 Summary:        Show %{productprettyname} Server health metrics and logs
 License:        Apache-2.0 

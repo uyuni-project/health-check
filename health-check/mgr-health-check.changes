@@ -1,4 +1,10 @@
 -------------------------------------------------------------------
+Tue Jun 10 14:15:26 CEST 2025 - marek.czernek@suse.com
+
+- version 0.1.8-0
+  * Do not bind ports on all ifaces by default
+
+-------------------------------------------------------------------
 Tue Jun 10 09:55:25 CEST 2025 - marek.czernek@suse.com
 
 - version 0.1.7-0
