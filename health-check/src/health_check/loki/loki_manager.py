@@ -13,7 +13,7 @@ PROMTAIL_TARGETS = 6
 LOKI_WAIT_TIMEOUT = 120
 
 
-def run_loki(supportconfig_path=None, verbose=False):
+def run_loki(supportconfig_path=None, verbose=False, iface="127.0.0.1"):
     """
     Run promtail and loki to aggregate the logs
     """
@@ -38,7 +38,7 @@ def run_loki(supportconfig_path=None, verbose=False):
             "--network",
             network,
             "--publish",
-            "3100:3100",
+            f"{iface}:3100:3100",
             "--name",
             loki_name,
             "--volume",
@@ -58,7 +58,7 @@ def run_loki(supportconfig_path=None, verbose=False):
         "--network",
         network,
         "--publish",
-        "9081:9081",
+        f"{iface}:9081:9081",
         "--detach",
         "--volume",
         f'{config.get_config_file_path("promtail")}:/etc/promtail/config.yml',
