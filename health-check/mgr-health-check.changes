@@ -1,4 +1,11 @@
 -------------------------------------------------------------------
+Tue Jun 10 09:55:25 CEST 2025 - marek.czernek@suse.com
+
+- version 0.1.7-0
+  * Remove configs when executing the 'clean' command
+  * Move supportconfig exporter scripts into the container build
+
+-------------------------------------------------------------------
 Thu Jun 05 13:23:33 WEST 2025 - psuarezhernandez@suse.com
 
 - version 0.1.6-0
