@@ -1,0 +1,2 @@
+- Relabel bind-mounted volumes so the containers can read them on
+  SELinux enforcing hosts
